@@ -1,7 +1,7 @@
 # m1p11mean-Diamondra-Ericka-be
 
 ## Overview 
-This documentation provides instructions on setting up and running the Salon de Coiffure Node.js application. 
+This documentation provides instructions on setting up and running the Node.js application. 
 
 ## Prerequisites
 - Node.js (18.17)
