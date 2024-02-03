@@ -1,6 +1,7 @@
 const Ajv = require('ajv');
+const responseHandler  = require('../handler/responseHandler');
 
-function validateSchema(schema, data) {
+function validateSchema(schema, data){
     const ajv = new Ajv();
     const valid = ajv.compile(schema);
 
@@ -34,8 +35,13 @@ function validateSchema(schema, data) {
             }
             return errorMessage;
         });
+        
         const errorMessage = errors.join(', ');
-        throw new Error(errorMessage);
+
+
+        const errorException = new responseHandler(400, errorMessage)
+
+        throw errorException;
     } 
 }
 

@@ -4,9 +4,18 @@ const userController = {
     /* Login controller for all users */
      login: async (req, res) => {
         const { email, password } = req.body;
-        await userService.login(email, password);
-        res.send('respond with a resource');
+        
+        try{
+            const responseLogin =  await userService.login(email, password);
+
+        }
+        catch(err){
+            return res.status(err.status).json(err);
+        }
+        
+
     },
+
     /* Login controller for all users */
 
     /* Signup controller for customers */

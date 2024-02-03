@@ -1,19 +1,10 @@
-class ResponseHandler {
-    constructor(res, status = 200, message = '', data = undefined) {
-        this.error = (res, status, message) => {
-            let response = {
-                status: status,
-                message: message
-            };
-            
-            if (data !== undefined) {
-                response.data = data;
-            }
-            
-            return res.status(status).json(response);
-        };
+class responseHandler {
+    
+    constructor(status = 200, message = '', data = undefined) {
+        this.status = status;
+        this.message = message;
+        (data !== undefined) ? this.data = data : '';
     }
 }
 
-
-module.exports = ResponseHandler;
+module.exports = responseHandler;

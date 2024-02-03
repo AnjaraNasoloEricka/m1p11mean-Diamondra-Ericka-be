@@ -4,12 +4,14 @@ const ResponseHandler = require('../handler/responseHandler');
 const User = require('../../models/user');
 const bcrypt = require('bcrypt');
 
+
 const userService = {
     login: async function(email, password) {
         const data = { email : email, password : password };
         try{
             const schema = ajvValidateUser.getSchemaLogin();
             ajvServices.validateSchema(schema, data);
+
         }
         catch(error){
             console.log("error", error);
@@ -34,6 +36,11 @@ const userService = {
             return new ResponseHandler(res, 400, error.message);
         }      
     },
+            console.log("error", error)
+            throw error;
+        }
+    
+    }
 };
 
 module.exports = userService;
