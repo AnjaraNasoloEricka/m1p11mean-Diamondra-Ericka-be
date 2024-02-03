@@ -11,5 +11,8 @@ router.get('/', function(req, res, next) {
 router.post('/signIn',userController.login);
 /* Login endpoint */
 
+/* Signup endpoint */
+router.post('/signUp', userController.signUp);
+/* Signup endpoint */
 
 module.exports = router;

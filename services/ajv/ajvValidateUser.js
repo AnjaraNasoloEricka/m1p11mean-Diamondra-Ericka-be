@@ -29,7 +29,7 @@ module.exports = {
                 },
                 "password": {
                     "type": "string",
-                    "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*[0-9]).{8,}$"
+                    //"pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*[0-9]).{8,}$"
                 },
                 "passwordConfirmation": {
                     "type": "string"
