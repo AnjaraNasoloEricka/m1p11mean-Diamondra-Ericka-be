@@ -35,11 +35,6 @@ const userService = {
             console.log("error", error);
             return new ResponseHandler(res, 400, error.message);
         }      
-    },
-            console.log("error", error)
-            throw error;
-        }
-    
     }
 };
 
