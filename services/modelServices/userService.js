@@ -1,7 +1,7 @@
 const ajvServices = require('../ajv/ajvServices');
 const ajvValidateUser = require('../ajv/ajvValidateUser');
-const ResponseHandler = require('../handler/responseHandler');
-const User = require('../../models/user');
+const responseHandler = require('../handler/responseHandler');
+const { User } = require('../../models/User');
 const bcrypt = require('bcrypt');
 
 
@@ -11,10 +11,33 @@ const userService = {
         try{
             const schema = ajvValidateUser.getSchemaLogin();
             ajvServices.validateSchema(schema, data);
+            let user = await User.findOne({ email : email });
+            if (!user)
+                throw new responseHandler(401, 'The user does not exist');
 
+            const validPassword = await bcrypt.compare(
+                password,
+                user.password
+            );
+
+            if (!validPassword)
+                throw new responseHandler(401, 'The password is incorrect');
+    
+            const token = user.generateAuthToken();
+
+            return new responseHandler(200, "The email and password are valid",
+                {
+                    "token" : token,
+                    "user" : {
+                        "name" : user.name,
+                        "email" : user.email,
+                        "role" : user.role,
+                    }
+                }
+            );        
         }
         catch(error){
-            console.log("error", error);
+            throw error;
         }      
     },
     signUp: async function(req, res) {

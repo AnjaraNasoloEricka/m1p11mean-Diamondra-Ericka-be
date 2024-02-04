@@ -1,20 +1,19 @@
 const mongoose = require('mongoose');
+const jwt = require("jsonwebtoken");
+
 
 const userSchema = new mongoose.Schema({
+    _id: {
+        type: mongoose.Schema.Types.ObjectId,
+        auto: true,
+    },
     name: {
         type: String,
         required: true,
     },
     email: {
         type: String,
-        required: true,
-        validate: {
-            validator: function(value) {
-                // validate email format:
-                return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-            },
-            message: 'Invalid email format',
-        },
+        required: true
     },
     password: {
         type: String,
@@ -22,7 +21,7 @@ const userSchema = new mongoose.Schema({
     },
     role: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Role',
+        ref: 'role',
         required: true,
     },
     phoneNumber: {
@@ -34,7 +33,22 @@ const userSchema = new mongoose.Schema({
         required: true,
         default: 0
     },
-});
+    },
+    {
+        collection : 'user'
+    });
+
+userSchema.methods.generateAuthToken = function () {
+    const token = jwt.sign({ 
+        _id: this._id,
+        name: this.name,
+        email: this.email,
+        role: this.role
+    }, process.env.TOKEN_SECRET);
+    return token;
+};
+
+const User = mongoose.model('User', userSchema);
 
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = { User };
