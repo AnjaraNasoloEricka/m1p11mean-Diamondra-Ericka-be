@@ -1,3 +1,6 @@
+const sendMail = require("./sendMailService");
+const crypto = require("crypto");
+
 module.exports = {
     async sendCongratulationEmail(pro) {
         let subject = "Bienvenue sur Owayzz - Compte activé";
@@ -40,64 +43,55 @@ module.exports = {
           });
       },
       
-      async generateUrl(member, transaction, req, type) {
+      async sendConfirmationEmail(user) {
+        console.log(user);
+        console.log("sendConfirmationEmail");
         let newUrl =
-          member.lienConfirmation === null
+          user.confirmationLink === null || user.confirmationLink === "" || user.confirmationLink === undefined
             ? crypto.randomBytes(32).toString("hex")
-            : member.lienConfirmation;
+            : user.confirmationLink;
+
         let subject, htmlContent;
-        await member.update(
-          {
-            lienConfirmation: newUrl,
-          },
-          { transaction }
-        );
-    
-        if (type === "signup") {
+
+        user.confirmationLink = newUrl;
+        await user.save();
+        
+        let salonName = "Paradise Glam"
           newUrl = process.env._HOST_FRONT + "/confirmAccount/" + newUrl;
-          subject = "Bienvenue sur Owayzz - Confirmez votre compte";
+          subject = `Registration Confirmation - ${salonName}`;
           // TODO: Customize this message based on the user's language
           htmlContent = `
     <!DOCTYPE html>
     <html>
     <head>
         <meta charset="UTF-8">
-        <title>Bienvenue sur Owayzz</title>
+        <title>Registration Confirmation - ${salonName}</title>
     </head>
     <body style="font-family: Arial, sans-serif;">
     
-    <h1 style="color: #0078D4;">Bienvenue sur Owayzz !</h1>
-    
-    <p style="font-size: 18px;">Préparez-vous pour une aventure passionnante d'exploration et de connexion avec des voyageurs du monde entier sur Owayzz, votre réseau social dédié aux passionnés de voyages.</p>
-    
-    <p style="font-size: 18px;">Pour commencer cette aventure, confirmez simplement votre compte en cliquant sur le lien ci-dessous :</p>
-    
-    <p style="font-size: 20px;"><a href="${newUrl}" style="color: #0078D4; text-decoration: none;">Confirmez Mon Compte</a></p>
-    
-    <p style="font-size: 18px;">Si vous n'avez pas créé de compte sur Owayzz, vous pouvez ignorer cet e-mail en toute sécurité.</p>
-    
-    <p style="font-size: 18px;">Rejoignez-nous pour découvrir la beauté de nouvelles destinations, partager vos récits de voyage et vous connecter avec d'autres aventuriers !</p>
-    
-    <p style="font-size: 18px;">À bientôt sur Owayzz !</p>
-    
-    <hr>
-    
-    <p style="font-size: 16px;">Si vous n'avez pas initié cette demande ou si vous avez des questions, veuillez contacter notre équipe d'assistance.</p>
-    
-    <p style="font-size: 16px;">Cordialement,<br>L'équipe Owayzz</p>
-    
+      <p>Dear  ${user.name},</p>
+
+      <p>We are delighted to welcome you to the ${salonName} community! To complete your registration, please click the link below to verify your email address and activate your account:</p>
+
+      <a href="${newUrl}">Verify Your Email</a>
+
+      <p>Once your email address is verified, you will have full access to our exclusive services, special offers, and beauty tips.</p>
+
+      <p>If you did not attempt to sign up for ${salonName}, please ignore this email.</p>
+
+      <p>We look forward to seeing you soon at our salon and taking care of your beauty needs.</p>
+
+      <p>Best regards,<br>
+      The ${salonName} Team<br>
     </body>
     </html>
     `;
-        } else {
-          //TODO:
-        }
     
         //send email notification
         await sendMail
           .send(
             process.env._MAIL_USER,
-            member.email,
+            user.email,
             subject,
             subject,
             htmlContent,

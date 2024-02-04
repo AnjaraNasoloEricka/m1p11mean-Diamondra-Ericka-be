@@ -33,6 +33,10 @@ const userSchema = new mongoose.Schema({
         required: true,
         default: 0
     },
+    confirmationLink : {
+        type: String,
+        required: false,
+    },
     },
     {
         collection : 'user'

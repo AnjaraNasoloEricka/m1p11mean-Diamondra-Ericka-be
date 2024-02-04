@@ -3,7 +3,7 @@ const ajvValidateUser = require('../ajv/ajvValidateUser');
 const responseHandler = require('../handler/responseHandler');
 const { User } = require('../../models/User');
 const bcrypt = require('bcrypt');
-
+const utilities = require('../utilities');
 
 const userService = {
     login: async function(email, password) {
@@ -40,23 +40,31 @@ const userService = {
             throw error;
         }      
     },
-    signUp: async function(req, res) {
+    signUp: async function(userData) {
         try{
-            let userData = req.body;
             const schema = ajvValidateUser.getSchemaSignUp();
             ajvServices.validateSchema(schema, userData);
 
-            const user = new User(userData);
+            let user = await User.findOne({ email : userData.email });
+            if (user)
+                throw new responseHandler(401, 'This email is already registered',
+                    { "email" : userData.email }
+                );
+
+            user = new User(userData);
 
             const salt = await bcrypt.genSalt(Number(process.env.SALT));
             user.password = await bcrypt.hash(user.password, salt);
-            console.log(user.password);
-            return new ResponseHandler(res, 200, "User created successfully", user.toJSON());
-            //await user.save();
+            let newUser = await user.save();
+
+            //send email
+            await utilities.sendConfirmationEmail(newUser);
+            
+            return new responseHandler(200, "User created successfully, ", newUser.toJSON());
+
         }
         catch(error){
-            console.log("error", error);
-            return new ResponseHandler(res, 400, error.message);
+            throw error;
         }      
     }
 };

@@ -2,7 +2,8 @@
 
 /* Routes that don't need token to work */
 const publicRoutes = [
-    '/users/signIn'
+    '/users/signIn',
+    '/users/signUp',
 ];
 /* Routes that don't need token to work */
 
