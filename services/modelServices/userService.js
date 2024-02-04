@@ -60,12 +60,29 @@ const userService = {
             //send email
             await utilities.sendConfirmationEmail(newUser);
             
-            return new responseHandler(200, "User created successfully, ", newUser.toJSON());
+            return new responseHandler(200, "User created successfully", newUser.toJSON());
 
         }
         catch(error){
             throw error;
         }      
+    },
+    confirm: async function(token) {
+        try{
+            let user = await User.findOne({ confirmationLink : token });
+            if (!user)
+                throw new responseHandler(401, 'The user does not exist');
+            if (user.status === 1)
+                throw new responseHandler(401, 'The user is already confirmed');
+            
+            user.status = 1;
+            user.confirmationLink = "";
+            await user.save();
+            return new responseHandler(200, "The user is confirmed", user.toJSON());
+        }
+        catch(error){
+            throw error;
+        }
     }
 };
 

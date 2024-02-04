@@ -31,8 +31,21 @@ const userController = {
             console.log(err);
             return res.status(err.status).json(err);
         }
-    }
+    },
     /* Signup controller for customers */
+
+    /* Signup confirmation controller for customers */
+    confirm: async (req, res) => {
+        try {
+            const response = await userService.confirm(req.params.token);
+            res.status(response.status).json(response);
+        }
+        catch(err){
+            console.log(err);
+            return res.status(err.status).json(err);
+        }
+    }
+    /* Signup confirmation controller for customers */
 }
 
 module.exports = userController;

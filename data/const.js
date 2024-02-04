@@ -4,6 +4,7 @@
 const publicRoutes = [
     '/users/signIn',
     '/users/signUp',
+    '/users/confirm/:token',
 ];
 /* Routes that don't need token to work */
 

@@ -57,7 +57,7 @@ module.exports = {
         await user.save();
         
         let salonName = "Paradise Glam"
-          newUrl = process.env._HOST_FRONT + "/confirmAccount/" + newUrl;
+          newUrl = process.env._HOST_FRONT + "/confirmAccount?token=" + newUrl;
           subject = `Registration Confirmation - ${salonName}`;
           // TODO: Customize this message based on the user's language
           htmlContent = `
