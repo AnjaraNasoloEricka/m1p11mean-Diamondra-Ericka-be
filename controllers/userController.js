@@ -11,7 +11,6 @@ const userController = {
             return res.status(responseLogin.status).json(responseLogin);
         }
         catch(err){
-            console.log(err);
             return res.status(err.status).json(err);
         }
         

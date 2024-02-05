@@ -20,6 +20,8 @@ const userService = {
                 user.password
             );
 
+            if(user.status === 0) throw new responseHandler(401, 'Your account is not confirmed yet. Please check your email and confirm your account.');
+
             if (!validPassword)
                 throw new responseHandler(401, 'The password is incorrect');
     
