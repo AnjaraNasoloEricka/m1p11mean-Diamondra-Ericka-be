@@ -62,7 +62,14 @@ const userService = {
             //send email
             await utilities.sendConfirmationEmail(newUser);
             
-            return new responseHandler(200, "User created successfully", newUser.toJSON());
+            return new responseHandler(200, "User created successfully. Please check your email and confirm your account.", 
+                {
+                    "user" : {
+                        "name" : newUser.name,
+                        "email" : newUser.email,
+                        "role" : newUser.role,
+                    }
+                });
 
         }
         catch(error){
