@@ -5,6 +5,7 @@ const { User } = require('../../models/User');
 const { Role } = require('../../models/Role');
 const bcrypt = require('bcrypt');
 const utilities = require('../utilities');
+const { Customer } = require('../../models/Customer');
 
 const userService = {
     login: async function(email, password) {
@@ -66,6 +67,12 @@ const userService = {
             const salt = await bcrypt.genSalt(Number(process.env.SALT));
             user.password = await bcrypt.hash(user.password, salt);
             let newUser = await user.save();
+
+            //Create Customer User
+            let customer = new Customer()
+            customer.user = newUser;
+
+            await customer.save();
 
             //send email
             await utilities.sendConfirmationEmail(newUser);
