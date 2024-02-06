@@ -18,7 +18,7 @@ module.exports = {
     getSchemaSignUp() {
         return {
             "type": "object",
-            "required": ["email", "name", "password", "passwordConfirmation"],
+            "required": ["email", "name", "password", "phoneNumber"],
             "properties": {
                 "email": {
                     "type": "string",
@@ -30,10 +30,9 @@ module.exports = {
                 },
                 "password": {
                     "type": "string",
-                    //"pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*[0-9]).{8,}$"
                 },
-                "passwordConfirmation": {
-                    "type": "string"
+                "phoneNumber": {
+                    "type": "string",
                 },
             }
         };

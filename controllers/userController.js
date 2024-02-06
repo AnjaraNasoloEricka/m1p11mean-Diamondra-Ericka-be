@@ -24,10 +24,9 @@ const userController = {
         try {
             const response = await userService.signUp(req.body);
 
-            res.status(response.status).json(response);
+            return res.status(response.status).json(response);
         }
         catch(err){
-            console.log(err);
             return res.status(err.status).json(err);
         }
     },
@@ -37,7 +36,7 @@ const userController = {
     confirm: async (req, res) => {
         try {
             const response = await userService.confirm(req.params.token);
-            res.status(response.status).json(response);
+            return res.status(response.status).json(response);
         }
         catch(err){
             console.log(err);

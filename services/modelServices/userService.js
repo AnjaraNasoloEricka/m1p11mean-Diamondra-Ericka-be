@@ -2,6 +2,7 @@ const ajvServices = require('../ajv/ajvServices');
 const ajvValidateUser = require('../ajv/ajvValidateUser');
 const responseHandler = require('../handler/responseHandler');
 const { User } = require('../../models/User');
+const { Role } = require('../../models/Role');
 const bcrypt = require('bcrypt');
 const utilities = require('../utilities');
 
@@ -54,6 +55,13 @@ const userService = {
                 );
 
             user = new User(userData);
+
+            let role = await Role.findOne({ label : "Customer" });
+
+            if (!role)
+                throw new responseHandler(500, 'The role does not exist');
+
+            user.role = role._id;
 
             const salt = await bcrypt.genSalt(Number(process.env.SALT));
             user.password = await bcrypt.hash(user.password, salt);
