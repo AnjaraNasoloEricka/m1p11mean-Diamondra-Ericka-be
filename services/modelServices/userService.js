@@ -102,7 +102,12 @@ const userService = {
             user.status = 1;
             user.confirmationLink = "";
             await user.save();
-            return new responseHandler(200, "The user is confirmed", user.toJSON());
+            return new responseHandler(200, 
+                `Congratulations!
+
+                Your registration has been successfully confirmed.
+                
+                Thank you for joining our community.`);
         }
         catch(error){
             throw error;

@@ -3,8 +3,8 @@
 /* Routes that don't need token to work */
 const publicRoutes = [
     '/users/signIn',
-    '/users/signUp',
-    '/users/confirm/:token',
+    '/users/signUp',    
+    '/users/confirmRegister',
 ];
 /* Routes that don't need token to work */
 
