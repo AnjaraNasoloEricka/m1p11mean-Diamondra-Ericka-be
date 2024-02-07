@@ -39,12 +39,12 @@ function validateSchema(schema, data){
             return errorMessage;
         });
         
-        const errorMessage = errors.join(', ');
+        const errorMessage = errors.join(',');
 
 
         const errorException = new responseHandler(400, errorMessage)
 
-        throw errorException;
+        if(errorMessage.length > 0) throw errorException;
     } 
 }
 

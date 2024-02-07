@@ -5,11 +5,11 @@ const serviceSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    // serviceType: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //    // ref: 'ServiceType',
-    //     required: true
-    // },
+    serviceType: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'service.type',
+        required: true
+    },
     price: {
         type: Number,
         required: true

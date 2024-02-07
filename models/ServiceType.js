@@ -5,6 +5,8 @@ const serviceTypeSchema = new mongoose.Schema({
         type: String,
         required: true
     }
+},{
+    collection : 'service.type'
 });
 
 module.exports = mongoose.model('ServiceType', serviceTypeSchema);;

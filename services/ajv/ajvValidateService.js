@@ -2,9 +2,12 @@ module.exports = {
     getSchemaService(){
         return {
             "type": "object",
-            "required": ["name", "price", "description", "duration", "commissionRate"],
+            "required": ["name", "serviceType", "price", "description", "duration", "commissionRate"],
             "properties": {
                 "name": {
+                    "type": "string"
+                },
+                "serviceType": {
                     "type": "string"
                 },
                 "price": {
