@@ -29,8 +29,11 @@ function validateSchema(schema, data){
                 case 'maxLength':
                     errorMessage = `${error.instancePath.slice(1)} is too long`;
                     break;
-                default:
-                    errorMessage = error.message;
+                case 'minimum':
+                    errorMessage = `${error.instancePath.slice(1)} is too small`;
+                    break;
+                case 'maximum':
+                    errorMessage = `${error.instancePath.slice(1)} is too large`;
                     break;
             }
             return errorMessage;
