@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const employeeScheduleSchema = new mongoose.Schema({
+    _id: {
+        type: mongoose.Schema.Types.ObjectId,
+        auto: true
+    },
     startDate: {
         type: Date,
         required: true
@@ -21,6 +25,10 @@ const employeeScheduleSchema = new mongoose.Schema({
         type: String,
         required: true
     }
+},
+{
+    collection: 'employee.schedule'
 });
 
-module.exports = mongoose.model('EmployeeSchedule', employeeScheduleSchema);
+const EmployeeSchedule = mongoose.model('EmployeeSchedule', employeeScheduleSchema);
+module.exports = { EmployeeSchedule };
