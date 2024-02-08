@@ -3,7 +3,7 @@ const ajvValidateUser = require('../ajv/ajvValidateUser');
 const responseHandler = require('../handler/responseHandler');
 const { Employee } = require('../../models/employee');
 const { Role } = require('../../models/Role');
-
+const { Customer } = require('../../models/Customer');
 
 const employeeService = {
 
@@ -12,6 +12,14 @@ const employeeService = {
         try {
             const schema = ajvValidateUser.getSchemaSignUp();
             ajvServices.validateSchema(schema, employeeData.user);
+
+            let user = await Employee.findOne({ 'user.email' : employeeData.user.email });
+            if (user)
+                throw new responseHandler(401, 'This email is already registered as an employee');
+
+            user = await Customer.findOne({ 'user.email' : employeeData.user.email });
+            if (user)
+                throw new responseHandler(401, 'This email is already registered as a customer');
 
             employeeData.user.status = 1;
 
