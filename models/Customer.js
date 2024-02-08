@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { User } = require('./User');
 
 const clientSchema = new mongoose.Schema({
     _id: {
@@ -6,8 +7,7 @@ const clientSchema = new mongoose.Schema({
         auto: true,
     },
     user : {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        type: User.schema,
         required: true
     },
     },
