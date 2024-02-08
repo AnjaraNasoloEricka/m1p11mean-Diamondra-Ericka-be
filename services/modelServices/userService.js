@@ -62,7 +62,7 @@ const userService = {
             if (!role)
                 throw new responseHandler(500, 'The role does not exist');
 
-            user.role = role._id;
+            user.role = role;
 
             const salt = await bcrypt.genSalt(Number(process.env.SALT));
             user.password = await bcrypt.hash(user.password, salt);

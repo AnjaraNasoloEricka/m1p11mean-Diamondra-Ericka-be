@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const jwt = require("jsonwebtoken");
-
+const { Role } = require('./Role');
 
 const userSchema = new mongoose.Schema({
     _id: {
@@ -20,8 +20,7 @@ const userSchema = new mongoose.Schema({
         required: true,
     },
     role: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'role',
+        type: Role.schema,
         required: true,
     },
     phoneNumber: {
