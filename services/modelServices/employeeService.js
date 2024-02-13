@@ -1,7 +1,7 @@
 const ajvServices = require('../ajv/ajvServices');
 const ajvValidateUser = require('../ajv/ajvValidateUser');
 const responseHandler = require('../handler/responseHandler');
-const { Employee } = require('../../models/employee');
+const { Employee } = require('../../models/Employee');
 const { Role } = require('../../models/Role');
 const { Customer } = require('../../models/Customer');
 

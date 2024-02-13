@@ -3,6 +3,7 @@ var router = express.Router();
 var usersRouter = require('./users');
 var serviceRouter = require('./service');
 var employeeRouter = require('./employee');
+var appointmentRouter = require('./appointment');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -20,5 +21,9 @@ router.use('/services', serviceRouter);
 // router for employee
 router.use('/employees', employeeRouter);
 // router for employee
+
+// router for appointment
+router.use('/appointments', appointmentRouter);
+// router for appointment
 
 module.exports = router;

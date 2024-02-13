@@ -35,12 +35,11 @@ const appointmentSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    deposit: {
-        type: Number,
-    },
     leftToPay: {
         type: Number,
     }
+},{
+    collection : 'appointment'
 });
 
 const Appointment = mongoose.model('Appointment', appointmentSchema);
