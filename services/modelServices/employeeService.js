@@ -4,6 +4,8 @@ const responseHandler = require('../handler/responseHandler');
 const { Employee } = require('../../models/Employee');
 const { Role } = require('../../models/Role');
 const { Customer } = require('../../models/Customer');
+const { User } = require('../../models/User');
+const bcrypt = require('bcrypt');
 
 const employeeService = {
 
@@ -30,7 +32,15 @@ const employeeService = {
 
             employeeData.user.role = role;
 
+            let newUser = new User(employeeData.user);
+
+            const salt = await bcrypt.genSalt(Number(process.env.SALT));
+            newUser.password = await bcrypt.hash(newUser.password, salt);
+            
+            await newUser.save();
+
             let newEmployee = new Employee(employeeData);
+            newEmployee.user = newUser;
             
             await newEmployee.save();
 
