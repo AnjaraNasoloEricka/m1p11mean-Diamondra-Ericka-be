@@ -26,4 +26,8 @@ router.use('/employees', employeeRouter);
 router.use('/appointments', appointmentRouter);
 // router for appointment
 
+// router for employee schedule
+router.use('/schedules', require('./schedule'));
+// router for employee schedule
+
 module.exports = router;
