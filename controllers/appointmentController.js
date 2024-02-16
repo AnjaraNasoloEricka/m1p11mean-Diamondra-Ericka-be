@@ -21,7 +21,17 @@ const appointmentController = {
         catch(err){
             return res.status(err.status).json(err);
         }
-    }
+    },
+
+    createAppointment: async (req, res) => {
+        try {
+            const response = await appointmentService.createAppointment(req.body);
+            return res.status(response.status).json(response);
+        }
+        catch(err){
+            return res.status(err.status).json(err);
+        }
+    },
 };
 
 module.exports = appointmentController;

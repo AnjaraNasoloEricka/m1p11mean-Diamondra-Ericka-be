@@ -25,7 +25,6 @@ const appointmentSchema = new mongoose.Schema({
     },
     endDateTime: {
         type: Date,
-        required: true
     },
     payments: {
         type: [mongoose.Schema.Types.ObjectId],

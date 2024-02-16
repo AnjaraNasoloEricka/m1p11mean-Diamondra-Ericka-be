@@ -7,4 +7,6 @@ router.get('/', appointmentController.getAllAppointmentsByEmployee);
 
 router.get('/customer', appointmentController.getAllAppointmentsByCustomer);
 
+router.post('/', appointmentController.createAppointment);
+
 module.exports = router;
