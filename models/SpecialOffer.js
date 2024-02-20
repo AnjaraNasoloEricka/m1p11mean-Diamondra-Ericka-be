@@ -1,13 +1,17 @@
 const mongoose = require('mongoose');
 
 const specialOfferSchema = new mongoose.Schema({
+    _id: {
+        type: mongoose.Schema.Types.ObjectId,
+        auto: true,
+    },
     startDate: {
         type: Date,
         required: true
     },
     endDate: {
         type: Date,
-        required: true
+        required: true,
     },
     services: {
         type: [mongoose.Schema.Types.ObjectId],
@@ -16,7 +20,8 @@ const specialOfferSchema = new mongoose.Schema({
     },
     reductionType: {
         type: String,
-        required: true
+        required: true,
+        enum: ['percentage', 'value']
     },
     reductionValue: {
         type: Number,
@@ -30,7 +35,12 @@ const specialOfferSchema = new mongoose.Schema({
         type: Number,
         required: true
     }
-});
-    
-module.exports =  mongoose.model('SpecialOffer', specialOfferSchema);
+},
+{
+    collection : 'specialOffer'
+}
+);
 
+const SpecialOffer = mongoose.model('SpecialOffer', specialOfferSchema);
+module.exports = { SpecialOffer };
+    
