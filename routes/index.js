@@ -4,6 +4,7 @@ var usersRouter = require('./users');
 var serviceRouter = require('./service');
 var employeeRouter = require('./employee');
 var appointmentRouter = require('./appointment');
+var specialOfferRouter = require('./specialOffer');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -29,5 +30,9 @@ router.use('/appointments', appointmentRouter);
 // router for employee schedule
 router.use('/schedules', require('./schedule'));
 // router for employee schedule
+
+// router for special offer
+router.use('/specialOffers', specialOfferRouter);
+// router for special offer
 
 module.exports = router;
