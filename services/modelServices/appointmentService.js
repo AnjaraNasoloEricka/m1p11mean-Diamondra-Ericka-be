@@ -69,7 +69,7 @@ const appointmentService = {
                 newAppointment.specialOffer = specialOffer;
             }
 
-           // await newAppointment.save();
+           await newAppointment.save();
             await appointmentScheduler.remindAppointment(newAppointment);
             return new responseHandler(200, "Appointment saved successfully", newAppointment);
         }
