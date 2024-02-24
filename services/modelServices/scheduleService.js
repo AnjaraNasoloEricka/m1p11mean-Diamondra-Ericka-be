@@ -3,6 +3,7 @@ const { Employee } = require("../../models/Employee");
 const ajvValidateEmployeeSchedule = require("../ajv/ajvValidateEmployeeSchedule");
 const responseHandler = require("../handler/responseHandler");
 const ajvServices = require('../ajv/ajvServices');
+const hourUtilities = require('../hourUtilities');
 
 const scheduleService = {
     getCurrentSchedule: async (currentDate, userId) => {
@@ -12,6 +13,7 @@ const scheduleService = {
                 'employeeSchedule.startDate': { $lte: currentDate },
                 'employeeSchedule.endDate': { $gte: currentDate }
             }, {'employeeSchedule.$': 1}).exec();
+
             if (!schedule) throw new responseHandler(404, 'Schedule is not found');
             return new responseHandler(200, "Schedule is found", schedule);
         }
@@ -30,78 +32,49 @@ const scheduleService = {
         }
     },
     checkDuplicateSchedule : async (userId, schedule) => {
-        // convert schedule.startDate and schedule.endDate to date
         try{
-            // const date1 = new Date('2027-06-11').toISOString();
-            // const date2 = new Date('2027-06-12').toISOString();
-            // console.log(date1, "date1")
+            schedule.startHour = hourUtilities.getSecondTotal(schedule.startHour);
+            schedule.endHour = hourUtilities.getSecondTotal(schedule.endHour);
 
-            // const result = await Employee.findOne(
-            // {   
-            //     $or: [
-            //         { 'employeeSchedule.startDate': { $gte: date1, $lte: date2 } },
-            //         { 'employeeSchedule.endDate': { $gte: date1, $lte: date2 } }
-            //     //     { $and : [{'employeeSchedule.startDate': { $lte: new Date(schedule.startDate).toISOString() }, 'employeeSchedule.endDate': { $gte: new Date(schedule.startDate).toISOString() }}]},
-            //     //     { $and : [{'employeeSchedule.startDate': { $lte: new Date(schedule.endDate).toISOString() }, 'employeeSchedule.endDate': { $gte: new Date(schedule.endDate).toISOString() }}]},
-            //     // { $and : [{'employeeSchedule.startDate': { $gte: new Date(schedule.startDate).toISOString() }, 'employeeSchedule.endDate': { $lte: new Date(schedule.endDate).toISOString() }}]}
-            //     ],
-            //     'employeeSchedule': { $exists: true, $ne: [] }
-            // },
-            // { 'employeeSchedule.$': 1 }
-            // ).exec();
-
-            const startDate = new Date('2026-01-11').toISOString();
-            const endDate = new Date('2026-01-12').toISOString();
-
-            // const result = await Employee.findOne(
-            // {
-            //     'employeeSchedule': { $exists: true, $ne: [] },
-            //     $or : [
-            //         { $and : [{'employeeSchedule.startDate': { $lte: startDate }, 'employeeSchedule.endDate': { $gte: startDate }}]},
-            //         { $and : [{'employeeSchedule.startDate': { $lte: endDate }, 'employeeSchedule.endDate': { $gte: endDate }}]},
-            //         { $and : [{'employeeSchedule.startDate': { $gte: startDate }, 'employeeSchedule.endDate': { $lte: endDate }}]}     
-            // ]},
-            // { "employeeSchedule.$": 1 }
-            // ).exec();
-            console.log(startDate, "startDate")
-            console.log(endDate, "endDate")
-            const query = Employee.findOne(
+            await scheduleService.checkScheduleDateAndHour(schedule);
+            const result = await Employee.findOne(
                 {
-                    "employeeSchedule.startDate": {
-                        $lte: new Date(endDate),
-                    },
-                    "employeeSchedule.endDate": {
-                        $gte: new Date(startDate),
-                    },
-                    employeeSchedule: { $exists: true, $ne: [] },employeeSchedule: { $ne: [] },
+                    $or: [
+                        {
+                            'user._id': userId,
+                            employeeSchedule: {
+                                $elemMatch: {
+                                    'startDate': { $lte: schedule.startDate },
+                                    'endDate': { $gte: schedule.endDate },
+                                    'day': { $in: schedule.day }
+                                }                                
+                            }
+                        }
+                    ]
                 },
                 { "employeeSchedule.$": 1 }
-            );
-
-            const mongoQuery = query.getQuery(); // Obtient la partie de la requête MongoDB
-           // const mongoProjection = query.getProjection(); // Obtient la projection MongoDB
-
-            console.log("Requête MongoDB : ", mongoQuery);
-           // console.log("Projection MongoDB : ", mongoProjection);
-        
-            (result) && console.log(result, "day")
+            ).exec();
             
-
-            if(result.employeeSchedule) throw new responseHandler(400, 'Schedule is already exist');
+            if(result) throw new responseHandler(400, 'Schedule is already exist');
             return new responseHandler(200, 'Schedule does not exist yet');
         }
         catch(error){
+            console.log(error);
             throw new responseHandler((error.status ? error.status : 400), error.message);
         }
+    },
+    checkScheduleDateAndHour: async (schedule) => {
+        if((schedule.endDate) && (new Date(schedule.startDate) > new Date(schedule.endDate))) throw new responseHandler(400, 'Start date is greater than end date');
+        if(schedule.startHour > schedule.endHour) throw new responseHandler(400, 'Start hour is greater than end hour');
+      
     },
     insertSchedule: async (userId, schedule) => {
         try {
             const schema = ajvValidateEmployeeSchedule.getSchemaEmployeeSchedule();
 
             ajvServices.validateSchema(schema, schedule);
-
-
-            const checkDuplicate = await scheduleService.checkDuplicateSchedule(userId, schedule);
+            
+            await scheduleService.checkDuplicateSchedule(userId, schedule);
 
             const result = await Employee.updateOne({
                 'user._id': userId
@@ -116,7 +89,6 @@ const scheduleService = {
             return new responseHandler(200, 'Schedule is inserted', schedule);
         }
         catch (error) {
-            console.log(error);
             throw new responseHandler((error.status ? error.status : 400), error.message);
         } 
     },
@@ -125,6 +97,8 @@ const scheduleService = {
             const schema = ajvValidateEmployeeSchedule.getSchemaEmployeeSchedule();
 
             ajvServices.validateSchema(schema, schedule);
+
+            await scheduleService.checkDuplicateSchedule(userId, schedule);
 
             const result = await Employee.updateOne({
                 'user._id': userId,

@@ -50,7 +50,7 @@ const serviceController = {
     // Update a service by ID
     updateServiceById: async (req, res) => {
         try{
-            const response = await serviceService.updateServiceById(req.params.id, req.body, req.file);
+            const response = await serviceService.updateServiceById(req.params.id, req.body, req.file );
             return res.status(response.status).json(response);
         }
         catch(err){

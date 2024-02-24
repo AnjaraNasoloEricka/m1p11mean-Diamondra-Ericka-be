@@ -9,6 +9,9 @@ function validateSchema(schema, data){
         const errors = valid.errors.map(error => {
             let errorMessage = '';
             switch (error.keyword) {
+                case 'enum':
+                    errorMessage = `${error.instancePath.slice(1)} is invalid`;
+                    break;
                 case 'type':
                     if (error.params.type === 'undefined') {
                         errorMessage = `${error.instancePath.slice(1)} is required`;

@@ -1,4 +1,4 @@
-const specialOfferService = require('../services/specialOfferService');
+const specialOfferService = require('../services/modelServices/specialOfferService');
 
 const specialOfferController = {
     createSpecialOffer: async(req, res) => {
