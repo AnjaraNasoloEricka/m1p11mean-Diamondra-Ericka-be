@@ -4,11 +4,5 @@
     ],
     "routes": [
        { "src": "/(.*)", "dest": "/app.js" }
-    ],
-    "crons": [
-      {
-        "path": "/appointments/remind",
-        "schedule": "* * * * *"
-      }
     ]
- }
+}
