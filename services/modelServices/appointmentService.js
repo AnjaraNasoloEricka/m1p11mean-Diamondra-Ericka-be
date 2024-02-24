@@ -4,6 +4,7 @@ const Appointment = require('../../models/Appointment');
 const { Employee } = require('../../models/Employee');
 const { Customer } = require('../../models/Customer');
 const { Service } = require('../../models/Service');
+const { SpecialOffer } = require('../../models/SpecialOffer');
 const responseHandler = require('../handler/responseHandler');
 const { response } = require('../../app');
 
@@ -18,7 +19,6 @@ const appointmentService = {
             return new responseHandler(200, "Employee appointment found", appointments);
         }
         catch(err) {
-            console.error(err);
             throw new responseHandler(500, err.message);
         }
         
@@ -58,8 +58,8 @@ const appointmentService = {
             }
 
             if (appointmentData.serviceIds) {
-                const services = await Service.find({_id: {$in: appointmentData.services}});
-                if (services.length !== appointmentData.services.length) throw new responseHandler(404, "One or more services not found");
+                const services = await Service.find({_id: {$in: appointmentData.serviceIds}});
+                if (services.length !== appointmentData.serviceIds?.length) throw new responseHandler(404, "One or more services not found");
                 newAppointment.services = services;
             }
 
@@ -68,7 +68,6 @@ const appointmentService = {
                 if (!specialOffer) throw new responseHandler(404, "Special offer not found");
                 newAppointment.specialOffer = specialOffer;
             }
-
 
             await newAppointment.save();
             return new responseHandler(200, "Appointment saved successfully", newAppointment);
