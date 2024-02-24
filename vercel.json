@@ -7,7 +7,7 @@
     ],
     "crons": [
       {
-        "path": "/appointments/reminder",
+        "path": "/appointments/remind",
         "schedule": "* * * * *"
       }
     ]
