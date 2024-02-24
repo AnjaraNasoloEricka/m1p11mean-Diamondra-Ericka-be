@@ -29,8 +29,7 @@ const appointmentService = {
             const customerId = await Customer.findOne({"user._id": userId}).select('_id');
             
             if (!customerId) throw new responseHandler(404, "This user is not a customer");
- 
-            const appointments = await Appointment.find({client: customerId}).sort({startDatetime: 1}).populate('employee').populate('services').populate('specialOffer');
+            const appointments = await Appointment.find({'client._id': customerId}).sort({startDatetime: 1}).populate('employee');
             return new responseHandler(200, "Customer appointments found", appointments);
         }
         catch(err) {
