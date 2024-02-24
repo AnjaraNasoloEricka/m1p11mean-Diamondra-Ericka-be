@@ -6,7 +6,8 @@ const { Customer } = require('../../models/Customer');
 const { Service } = require('../../models/Service');
 const { SpecialOffer } = require('../../models/SpecialOffer');
 const responseHandler = require('../handler/responseHandler');
-const { response } = require('../../app');
+const appointmentScheduler = require('../scheduler/appointmentScheduler');
+
 
 const appointmentService = {
     getAllAppointmentsByEmployee : async function(userId) {
@@ -68,7 +69,8 @@ const appointmentService = {
                 newAppointment.specialOffer = specialOffer;
             }
 
-            await newAppointment.save();
+           // await newAppointment.save();
+            await appointmentScheduler.remindAppointment(newAppointment);
             return new responseHandler(200, "Appointment saved successfully", newAppointment);
         }
         catch(err) {

@@ -35,7 +35,8 @@ const appointmentController = {
     },
 
     remindAppointment: async (req, res) => {
-        console.log("Reminder");
+        await appointmentService.remindAppointment();
+        return res.status(200).json({message: "Remind sent"});
     }
 
 };

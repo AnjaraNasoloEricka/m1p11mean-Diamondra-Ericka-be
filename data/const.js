@@ -1,5 +1,8 @@
 // store static data in this file
 
+// reminderTime in hours
+const appointmentTimeReminder = [24, 1];
+
 /* Routes that don't need token to work */
 const publicRoutes = [
     '/users/signIn',
@@ -9,4 +12,4 @@ const publicRoutes = [
 /* Routes that don't need token to work */
 
 
-module.exports = { publicRoutes };
+module.exports = { publicRoutes, appointmentTimeReminder};
