@@ -9,4 +9,6 @@ router.get('/customer', appointmentController.getAllAppointmentsByCustomer);
 
 router.post('/', appointmentController.createAppointment);
 
+router.get('/reminder', appointmentController.remindAppointment);
+
 module.exports = router;

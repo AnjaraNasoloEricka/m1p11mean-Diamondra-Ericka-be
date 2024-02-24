@@ -33,6 +33,11 @@ const appointmentController = {
             return res.status(err.status).json(err);
         }
     },
+
+    remindAppointment: async (req, res) => {
+        console.log("Reminder");
+    }
+
 };
 
 module.exports = appointmentController;
