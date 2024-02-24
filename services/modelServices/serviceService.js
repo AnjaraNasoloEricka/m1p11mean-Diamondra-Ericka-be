@@ -1,12 +1,22 @@
 const ajvServices = require('../ajv/ajvServices');
 const ajvValidateService = require('../ajv/ajvValidateService');
 const { Service } = require('../../models/Service');
+const ServiceType = require('../../models/ServiceType');
 const responseHandler = require('../handler/responseHandler');
 const app = require("../../config/firebaseConfig");
 const firebaseStorage = require("../firebaseStorage");
 
 const serviceService = {
 
+    getAllServiceTypes: async function(){
+        try{
+            const serviceTypes = await ServiceType.find();
+            return new responseHandler(200, 'Service types found', serviceTypes);
+        }
+        catch(err){
+           throw new responseHandler(400, err.message);
+        }
+    },
 
     // Create a new service
     createService: async function(serviceData, imgFile) {

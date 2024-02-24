@@ -56,6 +56,17 @@ const serviceController = {
         catch(err){
             return res.status(err.status).json(err);
         }
+    },
+
+    // Get all service types
+    getServiceTypes: async (req, res) => {
+        try{
+            const response = await serviceService.getAllServiceTypes();
+            return res.status(response.status).json(response);
+        }
+        catch(err){
+            return res.status(err.status).json(err);
+        }
     }
 
 };
