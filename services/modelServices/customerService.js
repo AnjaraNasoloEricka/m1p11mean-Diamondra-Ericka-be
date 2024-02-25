@@ -1,5 +1,5 @@
 const ajvServices = require('../ajv/ajvServices');
-const Appointment = require('../../models/Appointment');
+const { Appointment } = require('../../models/Appointment');
 const { Employee } = require('../../models/Employee');
 const { Customer } = require('../../models/Customer');
 const { Service } = require('../../models/Service');
