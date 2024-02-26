@@ -5,6 +5,7 @@ const ServiceType = require('../../models/ServiceType');
 const responseHandler = require('../handler/responseHandler');
 const app = require("../../config/firebaseConfig");
 const firebaseStorage = require("../firebaseStorage");
+const hourUtilities = require('../hourUtilities');
 
 const serviceService = {
 
@@ -25,8 +26,10 @@ const serviceService = {
 
             ajvServices.validateSchema(schema, serviceData);
 
+            serviceData.duration = hourUtilities.getSecondTotal(serviceData.duration);
+
             let service = new Service(serviceData);
-           
+
             if(imgFile){
                 service.imageUrl = await firebaseStorage(app).uploadFileToStorage(imgFile, 'services', "IMG_" + service._id);
             }
@@ -74,6 +77,9 @@ const serviceService = {
         try{
             const schema = ajvValidateService.getSchemaService();
             ajvServices.validateSchema(schema, updatedServiceData);
+
+            updatedServiceData.duration = hourUtilities.getSecondTotal(updatedServiceData.duration);
+
             
             if(imgFile) updatedServiceData.imageUrl = await firebaseStorage(app).uploadFileToStorage(imgFile, 'services', "IMG_" + serviceId);
 

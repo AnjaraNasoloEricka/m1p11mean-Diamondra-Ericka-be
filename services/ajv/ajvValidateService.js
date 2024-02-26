@@ -18,8 +18,9 @@ module.exports = {
                     "type": "string"
                 },
                 "duration": {
-                    "type": "number",
-                    "minimum": 0
+                    "type": ["number", "string"],
+                    "pattern": "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$"
+                    
                 },
                 "commissionRate": {
                     "type": "number",
