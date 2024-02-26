@@ -1,8 +1,10 @@
 const Ajv = require('ajv');
+const addFormats = require("ajv-formats")
 const responseHandler  = require('../handler/responseHandler');
 
 function validateSchema(schema, data){
     const ajv = new Ajv();
+    addFormats(ajv);
     const valid = ajv.compile(schema);
 
     if (!valid(data)) {

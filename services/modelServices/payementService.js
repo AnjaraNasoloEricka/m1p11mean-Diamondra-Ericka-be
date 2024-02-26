@@ -1,6 +1,6 @@
-const Payement = require('../../models/Payement');
-const ajvValidatePayement = require('../ajvSchemas/ajvValidatePayement');
-const ajvServices = require('../ajvSchemas/ajvServices');
+const { Payment } = require('../../models/Payment');
+const ajvValidatePayement = require('../ajv/ajvValidatePayement');
+const ajvServices = require('../ajv/ajvServices');
 const responseHandler = require('../handler/responseHandler');
 const { Appointment } = require('../../models/Appointment');
 
@@ -13,7 +13,7 @@ const payementSevice = {
             let appointment = await Appointment.findOne({_id: appointmentId});
             if (!appointment) throw new responseHandler(404, "Appointment not found");
 
-            let newPayement = new Payement(payementData);
+            let newPayement = new Payment(payementData);
             await newPayement.save();
 
             appointment.payments.push(newPayement);

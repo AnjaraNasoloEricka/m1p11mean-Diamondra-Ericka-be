@@ -35,18 +35,18 @@ const appointmentSchema = new mongoose.Schema({
     endDateTime: {
         type: Date,
         default: function() {
-            let minutes = 0;
+            let seconds = 0;
             if (this.services) {
                 this.services.forEach(service => {
-                    minutes += service.duration;
+                    seconds += service.duration;
                 });
             }
             if (this.specialOffer) {
                 this.specialOffer.services.forEach(service => {
-                    minutes += service.duration;
+                    seconds += service.duration;
                 });
             }
-            return new Date(this.startDateTime.getTime() + minutes * 60000);
+            return new Date(this.startDateTime.getTime() + seconds * 1000);
         }
     },
     payments: {
@@ -95,4 +95,4 @@ const appointmentSchema = new mongoose.Schema({
 
 const Appointment = mongoose.model('Appointment', appointmentSchema);
 
-module.exports = Appointment;
+module.exports = { Appointment };

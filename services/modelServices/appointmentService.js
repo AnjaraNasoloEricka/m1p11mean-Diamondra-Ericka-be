@@ -1,6 +1,6 @@
 const ajvServices = require('../ajv/ajvServices');
 const ajvValidateAppointment = require('../ajv/ajvValidateAppointment');
-const Appointment = require('../../models/Appointment');
+const { Appointment } = require('../../models/Appointment');
 const { Employee } = require('../../models/Employee');
 const { Customer } = require('../../models/Customer');
 const { Service } = require('../../models/Service');
@@ -23,19 +23,6 @@ const appointmentService = {
             throw new responseHandler(500, err.message);
         }
         
-    },
-
-    getAllAppointmentsByCustomer : async function(userId) {
-        try {
-            const customerId = await Customer.findOne({"user._id": userId}).select('_id');
-            
-            if (!customerId) throw new responseHandler(404, "This user is not a customer");
-            const appointments = await Appointment.find({'client._id': customerId}).sort({startDatetime: 1}).populate('employee');
-            return new responseHandler(200, "Customer appointments found", appointments);
-        }
-        catch(err) {
-            throw new responseHandler(500, err.message);
-        }
     },
 
     createAppointment : async function(appointmentData) {
@@ -69,14 +56,59 @@ const appointmentService = {
                 newAppointment.specialOffer = specialOffer;
             }
 
-           await newAppointment.save();
+            //calculate endDateTime
+            let seconds = 0;
+            if (newAppointment.services) {
+                newAppointment.services.forEach(service => {
+                    seconds += service.duration;
+                });
+            }
+            if (newAppointment.specialOffer) {
+                newAppointment.specialOffer.services.forEach(service => {
+                    seconds += service.duration;
+                });
+            }
+            newAppointment.endDateTime = new Date(newAppointment.startDateTime.getTime() + seconds * 1000);
+
+            //calculate totalPrice
+            let price = 0;
+            if (newAppointment.services) {
+                newAppointment.services.forEach(service => {
+                    price += service.price;
+                });
+            }
+            if (newAppointment.specialOffer) {
+                newAppointment.specialOffer.services.forEach(service => {
+                    price += service.price;
+                });
+            }
+            newAppointment.totalPrice = price;
+            newAppointment.leftToPay = price;
+            await newAppointment.save();
             await appointmentScheduler.remindAppointment(newAppointment);
             return new responseHandler(200, "Appointment saved successfully", newAppointment);
         }
         catch(err) {
+            console.error(err);
+            throw new responseHandler(500, err.message);
+        }
+    },
+
+    getAppointmentById: async function(appointmentId) {
+        if (!appointmentId || appointmentId === 0) {
+            throw new responseHandler(400, 'The appointment ID is invalid');
+        }
+        try {
+            const appointment = await Appointment.findById(appointmentId);
+            if (!appointment) throw new responseHandler(404, "Appointment not found");
+            return new responseHandler(200, "Appointment found", appointment);
+        }
+        catch(err) {
+            console.error(err);
             throw new responseHandler(500, err.message);
         }
     }
+    
 
 };
 
