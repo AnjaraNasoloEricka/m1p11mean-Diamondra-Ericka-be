@@ -35,6 +35,7 @@ const userService = {
                     "user" : {
                         "name" : user.name,
                         "email" : user.email,
+                        "phoneNumber" : user.phoneNumber,
                         "role" : user.role,
                     }
                 }
