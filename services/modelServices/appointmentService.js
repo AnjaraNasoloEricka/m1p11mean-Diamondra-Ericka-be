@@ -25,6 +25,21 @@ const appointmentService = {
         
     },
 
+    getAllAppointmentsByEmployeeByDate : async function(userId, date) {
+        try {
+            if (!userId || userId === 0) throw new responseHandler(400, "The user ID is invalid");
+            const employeeId = await Employee.findOne({"user._id": userId}).select('_id');
+
+            if (!employeeId) throw new responseHandler(404, "This user is not an employee");
+
+            const appointments = await Appointment.find({'employee._id': employeeId, startDateTime: {$gte: date, $lt: new Date(date.getTime() + 24 * 60 * 60 * 1000)}});
+            return new responseHandler(200, "Employee appointment found", appointments);
+        }
+        catch(err) {
+            throw new responseHandler(500, err.message);
+        }
+    },
+
     createAppointment : async function(appointmentData) {
         try {
             const schema = ajvValidateAppointment.getSchemaAppointment();
@@ -107,8 +122,22 @@ const appointmentService = {
             console.error(err);
             throw new responseHandler(500, err.message);
         }
-    }
+    },
     
+    updateAppointmentStatus: async function(appointmentId, status) {
+        if (!appointmentId || appointmentId === 0) {
+            throw new responseHandler(400, 'The appointment ID is invalid');
+        }
+        try {
+            const appointment = await Appointment.findOneAndUpdate({_id: appointmentId}, {status: status}, {new: true});
+            if (!appointment) throw new responseHandler(404, "Appointment not found");
+            return new responseHandler(200, "Appointment updated successfully", appointment);
+        }
+        catch(err) {
+            console.error(err);
+            throw new responseHandler(500, err.message);
+        }
+    },
 
 };
 

@@ -14,4 +14,6 @@ router.get('/remind', appointmentController.remindAppointment);
 
 router.post('/:appointmentId/payments', payementController.savePayment);
 
+router.put('/:id', appointmentController.updateAppointmentStatusById);
+
 module.exports = router;

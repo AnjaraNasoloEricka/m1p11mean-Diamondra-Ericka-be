@@ -6,6 +6,7 @@ var employeeRouter = require('./employee');
 var appointmentRouter = require('./appointment');
 var specialOfferRouter = require('./specialOffer');
 var customerRouter = require('./customer');
+var taskRouter = require('./task');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -39,5 +40,7 @@ router.use('/specialOffers', specialOfferRouter);
 // router for customers
 router.use('/customers', customerRouter);
 // router for customers
+
+router.use('/tasks', taskRouter);
 
 module.exports = router;
