@@ -18,6 +18,8 @@ module.exports = (server) => {
   router.get('/notif', function(req,res){
     sendNotification();
   })
+  
+  var taskRouter = require('./task');
 
   /* GET home page. */
   router.get('/', function(req, res, next) {
@@ -51,6 +53,8 @@ module.exports = (server) => {
   // router for customers
   router.use('/customers', customerRouter);
   // router for customers
+
+  router.use('/tasks', taskRouter);
 
   return router;
 }

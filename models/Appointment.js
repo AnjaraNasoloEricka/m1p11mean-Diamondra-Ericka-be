@@ -88,6 +88,12 @@ const appointmentSchema = new mongoose.Schema({
             }
             return this.totalPrice - deposit;
         }
+    },
+    status: {
+        type: String,
+        required: true,
+        enum : ['toCome', 'inProgress', 'done', 'cancelled'],
+        default: 'toCome'
     }
 },{
     collection : 'appointment'

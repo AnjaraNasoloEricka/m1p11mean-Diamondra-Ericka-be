@@ -13,8 +13,8 @@ const customerController = {
     },
 
     getCustomerAppointments : async(req, res) => {
-        const userId = req.body.user._id;
         try {
+            const userId = req.params.id;
             const response = await customerService.getCustomerAppointments(userId);
             return res.status(response.status).json(response);
         }

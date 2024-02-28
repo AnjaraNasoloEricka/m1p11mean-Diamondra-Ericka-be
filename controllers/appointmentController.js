@@ -36,6 +36,16 @@ const appointmentController = {
         catch(err){
             return res.status(err.status).json(err);
         }
+    },
+
+    updateAppointmentStatusById: async (req, res) => {
+        try {
+            const response = await appointmentService.updateAppointmentStatus(req.params.id, req.body.status);
+            return res.status(response.status).json(response);
+        }
+        catch(err){
+            return res.status(err.status).json(err);
+        }
     }
 };
 
