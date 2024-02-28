@@ -58,6 +58,19 @@ const employeeController = {
             console.log(err);
             return res.status(err.status).json(err);
         }
+    },
+
+    // update employee info
+    updateEmployeeProfile : async(req, res) => {
+        try{
+            const id = req.user._id;
+            const response = await employeeService.updateEmployeeProfile(id, req.body);
+            return res.status(response.status).json(response);
+        }
+        catch(err){
+            console.log(err);
+            return res.status(err.status).json(err);
+        }
     }
 }
 

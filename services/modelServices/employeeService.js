@@ -110,6 +110,39 @@ const employeeService = {
         catch(error){
             throw new responseHandler((error.status) ?  error.status : 400, error.message);
         }
+    },
+
+    //update employee info profile
+    updateEmployeeProfile: async function(userId, userData){
+        try {
+            const schema = ajvValidateUser.getSchemaProfil();
+            ajvServices.validateSchema(schema, userData);
+        
+            let user = await User.findOneAndUpdate(
+                { '_id': userId },
+                { $set: userData }, 
+                { new: true }
+            ).exec();
+        
+            if (!user) {
+                throw new responseHandler(400, 'No user with this id was found');
+            }
+        
+            let employee = await Employee.findOneAndUpdate(
+                { 'user._id': userId },
+                { $set: { 'user': { '_id': userId, ...userData } } }, 
+                { new: true }
+            ).exec();
+        
+            if (!employee) {
+                throw new responseHandler(400, 'Employee is not found');
+            }
+        
+            return new responseHandler(200, "Successfully updated", employee);
+        } 
+        catch(error){
+            throw new responseHandler((error.status) ?  error.status : 400, error.message);
+        }
     }
 }
 

@@ -37,4 +37,22 @@ module.exports = {
             }
         };
     },
+    getSchemaProfil(){
+        return {
+            "type" : "object",
+            "required" : ["name", "email", "phoneNumber"],
+            "properties": {
+                "name":{
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
+                },
+                "phoneNumber": {
+                    "type" : "string"
+                }
+            }
+        }
+    }
 };

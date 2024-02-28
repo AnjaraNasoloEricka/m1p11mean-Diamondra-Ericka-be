@@ -23,6 +23,7 @@ const scheduleService = {
     },
     getAllSchedule : async (userId) => {
         try {
+            console.log("user ", userId);
             const schedule = await Employee.find({ 'user._id': userId }).select('employeeSchedule');
             if (!schedule) throw new responseHandler(404, 'Schedule is not found or user is not an employee');
             return new responseHandler(200, "Schedules are found", schedule);
@@ -54,8 +55,10 @@ const scheduleService = {
                 },
                 { "employeeSchedule.$": 1 }
             ).exec();
-            
-            if(result) throw new responseHandler(400, 'Schedule is already exist');
+
+            if(result){
+                if((!schedule._id)||((result.employeeSchedule[0]._id.toString() !== schedule._id.toString()))) throw new responseHandler(400, 'Schedule already exist');
+            }
             return new responseHandler(200, 'Schedule does not exist yet');
         }
         catch(error){

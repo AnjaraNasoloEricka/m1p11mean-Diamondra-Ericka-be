@@ -14,6 +14,10 @@ router.get('/:id', employeeController.getEmployeeById);
 router.get('', employeeController.getAllEmployees);
 /* Get all employees endpoint */
 
+/* Update employee info */
+router.put('/profile', employeeController.updateEmployeeProfile)
+/* Update employee info */
+
 /* Update employee by ID endpoint */
 router.put('/:id', employeeController.updateEmployeeById);
 /* Update employee by ID endpoint */
@@ -21,6 +25,8 @@ router.put('/:id', employeeController.updateEmployeeById);
 /* Delete employee by ID endpoint */
 router.delete('/:id', employeeController.deleteEmployeeById);
 /* Delete employee by ID endpoint */
+
+
 
 
 module.exports = router;
