@@ -45,7 +45,7 @@ const specialOfferController = (socket) => {
 
         deleteSpecialOfferById: async (req, res) => {
             try{
-                const response = await specialOfferService.deleteSpecialOffer(req.params.id);
+                const response = await specialOfferService.deleteSpecialOfferById(req.params.id);
                 return res.status(response.status).json(response);
             }
             catch(err){

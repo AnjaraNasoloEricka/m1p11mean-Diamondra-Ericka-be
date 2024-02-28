@@ -48,7 +48,9 @@ module.exports = (socket) => {
         // Read all special offers
         getAllSpecialOffers: async function() {
             try{
-                const specialOffers = await SpecialOffer.find();
+                const specialOffers = await SpecialOffer.find({
+                    status : 1
+                }).populate('services');
                 return new responseHandler(200, 'Special offers found', specialOffers);
             }
             catch(error){
@@ -71,7 +73,7 @@ module.exports = (socket) => {
                 return new responseHandler(200, 'Special offer updated successfully', specialOffer);
             }
             catch(error){
-                throw error;
+                throw new responseHandler((error.status) ?  error.status : 400, error.message);
             }
         },
 
@@ -81,7 +83,7 @@ module.exports = (socket) => {
                 throw new responseHandler(400, 'The special offer ID is invalid');
             }
             try{
-                const specialOffer = await SpecialOffer.findOne({ _id : specialOfferId}, {status : 0}, { new : true });
+                const specialOffer = await SpecialOffer.findOneAndUpdate({ _id : specialOfferId}, {status : 0}, { new : true });
                 if(!specialOffer) throw new responseHandler(404, 'Special offer not found');
                 return new responseHandler(200, 'Special offer deleted successfully', specialOffer);
             }
@@ -94,7 +96,7 @@ module.exports = (socket) => {
         getAllActiveSpecialOffersByDate: async function(date) {
             try{
                 const specialOffers = await SpecialOffer.find({status : 1, startDate: {$lte: date}, endDate: {$gte: date}});
-                return new responseHandler(200, 'Special offers found', specialOffers);
+                return new responseHandler(200, 'Special offers found', specialOffers).populate('services');
             }
             catch(error){
                 throw new responseHandler(400, error.message);
