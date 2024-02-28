@@ -8,7 +8,7 @@ module.exports = (server) => {
                 const io = socketIO(server, {
                     allowEIO3: true,
                     cors: {
-                        origin: "http://localhost:4200",
+                        origin: process.env._HOST_FRONT,
                         credentials: true
                     }
                 });
