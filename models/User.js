@@ -47,11 +47,10 @@ userSchema.methods.generateAuthToken = function () {
         name: this.name,
         email: this.email,
         role: this.role
-    }, process.env.TOKEN_SECRET);
+    }, process.env.TOKEN_SECRET, { expiresIn: '1h' });
     return token;
 };
 
 const User = mongoose.model('User', userSchema);
-
 
 module.exports = { User };
