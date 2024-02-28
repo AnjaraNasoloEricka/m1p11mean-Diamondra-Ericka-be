@@ -4,8 +4,8 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors'); 
+var http = require('http');
 
-var indexRouter = require('./routes/index');
 let authMiddleware = require('./services/middlewares/authMiddleware')
 const { connect } = require('./db/mongooseConnection');
 
@@ -27,6 +27,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(cors()); // Enable CORS for all routes
 
+/**
+ * Create HTTP server.
+ */
+
+var server = http.createServer(app);
+
+var indexRouter = require('./routes/index')(server);
+
 app.use('/', authMiddleware.checkToken, indexRouter);
 
 // catch 404 and forward to error handler
@@ -45,4 +53,7 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-module.exports = app;
+module.exports = {
+  app,
+  server
+};
