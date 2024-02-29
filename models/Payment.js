@@ -16,7 +16,8 @@ const paymentSchema = new mongoose.Schema({
         type: {
             type: String,
             required: true,
-            enum : ['cash', 'online']
+            enum : ['cash', 'online'],
+            default : 'online'
         }
     },
     {
