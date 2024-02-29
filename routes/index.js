@@ -4,43 +4,60 @@ var usersRouter = require('./users');
 var serviceRouter = require('./service');
 var employeeRouter = require('./employee');
 var appointmentRouter = require('./appointment');
-var specialOfferRouter = require('./specialOffer');
 var customerRouter = require('./customer');
-var taskRouter = require('./task');
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
+module.exports = (server) => {
+  const { initIoSocket } = require('../services/socketIOService')(server);
 
-// router for users (auth)
-router.use('/users', usersRouter);
-// router for users (auth)
+  /* Init socket */
+  const socketIO = initIoSocket();
+  const {sendNotification} = require('../services/modelServices/notificationService')(socketIO);
+  var specialOfferRouter = require('./specialOffer')(socketIO);
+  /* Init socket */
 
-// router for services
-router.use('/services', serviceRouter);
-// router for services
+  router.get('/notif', function(req,res){
+    sendNotification();
+  })
+  
+  var taskRouter = require('./task');
 
-// router for employee
-router.use('/employees', employeeRouter);
-// router for employee
+  /* GET home page. */
+  router.get('/', function(req, res, next) {
+    res.render('index', { title: 'Express' });
+  });
 
-// router for appointment
-router.use('/appointments', appointmentRouter);
-// router for appointment
+  // router for users (auth)
+  router.use('/users', usersRouter);
+  // router for users (auth)
 
-// router for employee schedule
-router.use('/schedules', require('./schedule'));
-// router for employee schedule
+  // router for services
+  router.use('/services', serviceRouter);
+  // router for services
 
-// router for special offer
-router.use('/specialOffers', specialOfferRouter);
-// router for special offer
+  // router for employee
+  router.use('/employees', employeeRouter);
+  // router for employee
 
-// router for customers
-router.use('/customers', customerRouter);
-// router for customers
+  // router for appointment
+  router.use('/appointments', appointmentRouter);
+  // router for appointment
 
-router.use('/tasks', taskRouter);
+  // router for employee schedule
+  router.use('/schedules', require('./schedule'));
+  // router for employee schedule
 
-module.exports = router;
+  // router for special offer
+  router.use('/specialOffers', specialOfferRouter);
+  // router for special offer
+
+  // router for customers
+  router.use('/customers', customerRouter);
+  // router for customers
+
+  router.use('/tasks', taskRouter);
+
+  return router;
+}
+
+
+// module.exports = router;

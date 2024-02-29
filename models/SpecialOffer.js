@@ -34,6 +34,12 @@ const specialOfferSchema = new mongoose.Schema({
     commissionValue: {
         type: Number,
         required: true
+    },
+    status : {
+        type: Number,
+        default: 1,
+        enum: [0, 1],
+        required: true
     }
 },
 {

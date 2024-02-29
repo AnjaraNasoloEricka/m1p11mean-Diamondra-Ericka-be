@@ -16,7 +16,6 @@ module.exports = {
                     "type": "array",
                     "items": {
                         "type": "string",
-                        "format": "uuid"
                     }
                 },
                 "reductionType": {
