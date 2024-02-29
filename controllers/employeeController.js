@@ -71,6 +71,17 @@ const employeeController = {
             console.log(err);
             return res.status(err.status).json(err);
         }
+    },
+
+    // get free employees
+    getFreeEmployees : async(req, res) => {
+        try {
+            const date = req.params.date;
+            const response = await employeeService.getFreeEmployees(date, req.body.serviceIds);
+            return res.status(response.status).json(response);
+        } catch (error) {
+            return res.status(error.status).json(error);
+        }
     }
 }
 

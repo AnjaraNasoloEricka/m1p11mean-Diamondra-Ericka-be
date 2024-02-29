@@ -6,6 +6,8 @@ const { Role } = require('../../models/Role');
 const { Customer } = require('../../models/Customer');
 const { User } = require('../../models/User');
 const bcrypt = require('bcrypt');
+const { Appointment } = require('../../models/Appointment');
+const { Service } = require('../../models/Service');
 
 const employeeService = {
 
@@ -137,6 +139,56 @@ const employeeService = {
         
             return new responseHandler(200, "Successfully updated", employee);
         } 
+        catch(error){
+            throw new responseHandler((error.status) ?  error.status : 400, error.message);
+        }
+    },
+
+    getFreeEmployees: async function(date, serviceIds) {
+        try {
+            date = new Date(date);
+            let employees = await Employee.find({status : 1});
+            let freeEmployees = [];
+            for (let employee of employees) {
+                let isFree = true;
+
+                const startDay = new Date(date);
+                startDay.setHours(0, 0, 0, 0);
+                const endDay = new Date(date);
+                endDay.setHours(23, 59, 59, 999);
+
+                 //calculate endDateTime
+                let seconds = 0;
+            
+                const services = await Service.find({_id: {$in : serviceIds}});
+                if (services.length !== serviceIds.length) {
+                    throw new responseHandler(404, "One or more services not found");
+                }
+
+                services.forEach(service => {
+                    seconds += service.duration;
+                });
+            
+                endDateTime = new Date(date.getTime() + seconds * 1000);
+
+                let appointments = await Appointment.find({employee: employee, startDateTime: { $gte: startDay, $lte: endDay }});
+                for (let appointment of appointments) {
+                    if (appointment.startDateTime.getTime() <= date.getTime() && appointment.endDateTime.getTime() >= date.getTime()) {
+                        isFree = false;
+                        break;
+                    }
+                    
+                    if (appointment.startDateTime.getTime() <= endDateTime.getTime() && appointment.endDateTime.getTime() >= endDateTime.getTime()) {
+                        isFree = false;
+                        break;
+                    }
+                }
+                if (isFree) {
+                    freeEmployees.push(employee);
+                }
+            }
+            return new responseHandler(200, "Employees found", freeEmployees);
+        }
         catch(error){
             throw new responseHandler((error.status) ?  error.status : 400, error.message);
         }
