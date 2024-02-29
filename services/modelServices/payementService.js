@@ -13,6 +13,8 @@ const payementSevice = {
             let appointment = await Appointment.findOne({_id: appointmentId});
             if (!appointment) throw new responseHandler(404, "Appointment not found");
 
+            if (appointment.leftToPay == 0) throw new responseHandler(400, "The amount is already paid");
+            if (appointment.leftToPay < payementData.amount) throw new responseHandler(400, "The amount is higher than the left to pay");
             let newPayement = new Payment(payementData);
             await newPayement.save();
 
