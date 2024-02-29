@@ -11,6 +11,10 @@ router.post('', expenseController.saveExpense);
 router.get('', expenseController.getAllExpense);
 /* Get all expenses endpoint */
 
+/* Get all expenses per month endpoint */
+router.get('/month/:year', expenseController.getExpensePerMonth);
+/* Get all expenses per month endpoint */
+
 /* Get all expense types endpoint */
 router.get('/types', expenseController.getAllExpenseType);
 /* Get all expense types endpoint */
