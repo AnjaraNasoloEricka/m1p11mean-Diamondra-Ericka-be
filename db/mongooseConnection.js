@@ -1,7 +1,7 @@
 require('dotenv').config()
 const mongoose = require('mongoose')
 
-function connect() {
+async function connect() {
     return new Promise((resolve, reject) => {
         mongoose.connect(process.env.MONGODB_URI)
             .then((res, err) => {

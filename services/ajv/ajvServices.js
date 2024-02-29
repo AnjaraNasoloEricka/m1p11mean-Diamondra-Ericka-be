@@ -1,14 +1,19 @@
 const Ajv = require('ajv');
+const addFormats = require("ajv-formats")
 const responseHandler  = require('../handler/responseHandler');
 
 function validateSchema(schema, data){
     const ajv = new Ajv();
+    addFormats(ajv);
     const valid = ajv.compile(schema);
 
     if (!valid(data)) {
         const errors = valid.errors.map(error => {
             let errorMessage = '';
             switch (error.keyword) {
+                case 'enum':
+                    errorMessage = `${error.instancePath.slice(1)} is invalid`;
+                    break;
                 case 'type':
                     if (error.params.type === 'undefined') {
                         errorMessage = `${error.instancePath.slice(1)} is required`;
@@ -29,19 +34,22 @@ function validateSchema(schema, data){
                 case 'maxLength':
                     errorMessage = `${error.instancePath.slice(1)} is too long`;
                     break;
-                default:
-                    errorMessage = error.message;
+                case 'minimum':
+                    errorMessage = `${error.instancePath.slice(1)} is too small`;
+                    break;
+                case 'maximum':
+                    errorMessage = `${error.instancePath.slice(1)} is too large`;
                     break;
             }
             return errorMessage;
         });
         
-        const errorMessage = errors.join(', ');
+        const errorMessage = errors.join(',');
 
 
         const errorException = new responseHandler(400, errorMessage)
 
-        throw errorException;
+        if(errorMessage.length > 0) throw errorException;
     } 
 }
 

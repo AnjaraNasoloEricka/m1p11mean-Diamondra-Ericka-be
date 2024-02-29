@@ -1,10 +1,18 @@
 const mongoose = require('mongoose');
 
 const expenseTypeSchema = new mongoose.Schema({
+    __id: {
+        type: mongoose.Schema.Types.ObjectId,
+        auto: true,
+    },
     label: {
         type: String,
         required: true
     }
+},
+{
+    collection : 'expenseType'
 });
 
-module.exports = mongoose.model('ExpenseType', expenseTypeSchema);
+const ExpenseType = mongoose.model('ExpenseType', expenseTypeSchema);
+module.exports = { ExpenseType };

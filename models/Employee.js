@@ -1,21 +1,37 @@
 const mongoose = require('mongoose');
+const { User } = require('./User');
+const { EmployeeSchedule } = require('./EmployeeSchedule');
+const { ServiceType } = require('./ServiceType');
 
 const employeeSchema = new mongoose.Schema({
-    user : {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
+        _id : {
+            type: mongoose.Schema.Types.ObjectId,
+            auto: true
+        },
+        user : {
+            type: User.schema,
+            required: true
+        },
+        services : {
+            type: [ServiceType.schema],
+            ref: 'Service',
+            required: true
+        },
+        employeeSchedule : {
+            type: [EmployeeSchedule.schema],
+            ref: 'EmployeeSchedule',
+            required: true
+        },
+        status : {
+            type: Number,
+            default: 1,
+            enum: [0, 1],
+            required: true
+        }
     },
-    services : {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: 'Service',
-        required: true
-    },
-    employeeSchedule : {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: 'EmployeeSchedule',
-        required: true
-    },
-});
+    {
+        collection : 'employee'
+    });
 
-module.exports = mongoose.model('Employee', employeeSchema);;
+const Employee = mongoose.model('Employee', employeeSchema);
+module.exports = { Employee };

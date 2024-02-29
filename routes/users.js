@@ -16,6 +16,6 @@ router.post('/signUp', userController.signUp);
 /* Signup endpoint */
 
 /* Signup confirmation endpoint */
-router.get('/confirm/:token', userController.confirm);
+router.get('/confirmRegister/:token', userController.confirm);
 /* Signup confirmation endpoint */
 module.exports = router;

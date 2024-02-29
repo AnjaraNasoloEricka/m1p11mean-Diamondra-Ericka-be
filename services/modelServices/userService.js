@@ -33,8 +33,10 @@ const userService = {
                 {
                     "token" : token,
                     "user" : {
+                        "id" : user._id,
                         "name" : user.name,
                         "email" : user.email,
+                        "phoneNumber" : user.phoneNumber,
                         "role" : user.role,
                     }
                 }
@@ -62,7 +64,7 @@ const userService = {
             if (!role)
                 throw new responseHandler(500, 'The role does not exist');
 
-            user.role = role._id;
+            user.role = role;
 
             const salt = await bcrypt.genSalt(Number(process.env.SALT));
             user.password = await bcrypt.hash(user.password, salt);
@@ -102,7 +104,12 @@ const userService = {
             user.status = 1;
             user.confirmationLink = "";
             await user.save();
-            return new responseHandler(200, "The user is confirmed", user.toJSON());
+            return new responseHandler(200, 
+                `Congratulations!
+
+                Your registration has been successfully confirmed.
+                
+                Thank you for joining our community.`);
         }
         catch(error){
             throw error;

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const jwt = require("jsonwebtoken");
-
+const { Role } = require('./Role');
 
 const userSchema = new mongoose.Schema({
     _id: {
@@ -20,8 +20,7 @@ const userSchema = new mongoose.Schema({
         required: true,
     },
     role: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'role',
+        type: Role.schema,
         required: true,
     },
     phoneNumber: {
@@ -48,11 +47,10 @@ userSchema.methods.generateAuthToken = function () {
         name: this.name,
         email: this.email,
         role: this.role
-    }, process.env.TOKEN_SECRET);
+    }, process.env.TOKEN_SECRET, { expiresIn: '1h' });
     return token;
 };
 
 const User = mongoose.model('User', userSchema);
-
 
 module.exports = { User };

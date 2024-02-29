@@ -39,7 +39,6 @@ const userController = {
             return res.status(response.status).json(response);
         }
         catch(err){
-            console.log(err);
             return res.status(err.status).json(err);
         }
     }

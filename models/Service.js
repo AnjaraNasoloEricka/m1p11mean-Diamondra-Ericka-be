@@ -7,16 +7,23 @@ const serviceSchema = new mongoose.Schema({
     },
     serviceType: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'ServiceType',
+        ref: 'service.type',
         required: true
     },
     price: {
         type: Number,
         required: true
     },
+    description: {
+        type: String,
+        required: true
+    },
     duration: {
         type: Number,
         required: true
+    },
+    imageUrl: {
+        type: String
     },
     commissionRate: {
         type: Number,
@@ -24,8 +31,19 @@ const serviceSchema = new mongoose.Schema({
     },
     commissionValue: {
         type: Number,
+        default: function() {
+            return this.price * this.commissionRate / 100;
+        }
+    },
+    status : {
+        type: Number,
+        default: 1,
+        enum: [0, 1],
         required: true
     }
+},{
+    collection : 'service'
 });
 
-module.exports = mongoose.model('Service', serviceSchema);
+const Service = mongoose.model('Service', serviceSchema);
+module.exports = { Service };

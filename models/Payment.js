@@ -1,18 +1,29 @@
 const mongoose = require('mongoose');
 
 const paymentSchema = new mongoose.Schema({
-    date: {
-        type: Date,
-        required: true
+        _id: {
+            type: mongoose.Schema.Types.ObjectId,
+            auto: true,
+        },
+        date: {
+            type: Date,
+            required: true
+        },
+        amount: {
+            type: Number,
+            required: true
+        },
+        type: {
+            type: String,
+            required: true,
+            enum : ['cash', 'online'],
+            default : 'online'
+        }
     },
-    amount: {
-        type: Number,
-        required: true
-    },
-    type: {
-        type: String,
-        required: true
+    {
+        collection : 'payement'
     }
-});
+);
 
-module.exports = mongoose.model('Payment', paymentSchema);
+const Payment = mongoose.model('Payment', paymentSchema);
+module.exports = { Payment };

@@ -2,44 +2,164 @@ const sendMail = require("./sendMailService");
 const crypto = require("crypto");
 
 module.exports = {
-    async sendCongratulationEmail(pro) {
-        let subject = "Bienvenue sur Owayzz - Compte activé";
-        // email content
-        let htmlContent = `
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <meta charset="UTF-8">
-                <title>Bienvenue sur Owayzz</title>
-            </head>
-            <body style="font-family: Arial, sans-serif;">
-                <h1 style="color: #0078D4;">Bienvenue sur Owayzz !</h1>
-                <p style="font-size: 18px;">Félicitations, votre compte ${pro.VTR_membre.pseudo} du nom de "${pro.VTR_membre.nom}" a été activé</p>
-                <p style="font-size: 18px;">Vous pouvez maintenant vous connecter à votre compte en tant qu'utilisateur de l'entité ${pro.VTR_entite.nom}</p>
-                <p style="font-size: 18px;">À bientôt sur Owayzz !</p>
-                <hr>
-                <p style="font-size: 16px;">Si vous avez des questions, veuillez contacter notre équipe d'assistance.</p>
-                <p style="font-size: 16px;">Cordialement,<br>L'équipe Owayzz</p>
-            </body>
-            </html>`;
-    
-        //send email notification
+
+    async setSpecialOfferEmail(specialOffer, clients) {
+      let salonName = "Paradise Glam";
+
+      let startDate = new Date(specialOffer.startDate).toLocaleDateString('en-US');
+      let endDate = new Date(specialOffer.endDate).toLocaleDateString('en-US');
+
+      let reductionType = specialOffer.reductionType === 'percentage' ? '%' : '';
+
+      let htmlContent = `
+          <!DOCTYPE html>
+          <html>
+          <head>
+              <title>Special Offer from ${salonName}</title>
+              <style>
+                  body {
+                      font-family: Arial, sans-serif;
+                      background-color: #f8f8f8;
+                      color: #333;
+                      margin: 0;
+                      padding: 20px;
+                  }
+          
+                  .container {
+                      max-width: 600px;
+                      margin: 0 auto;
+                      background-color: #fff;
+                      border-radius: 10px;
+                      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                      padding: 20px;
+                  }
+          
+                  h2 {
+                      color: #333;
+                      margin-top: 0;
+                  }
+          
+                  p {
+                      margin-top: 0;
+                      margin-bottom: 20px;
+                  }
+          
+                  .offer {
+                      background-color: #ffc107;
+                      color: #333;
+                      padding: 10px;
+                      border-radius: 5px;
+                      font-weight: bold;
+                      display: inline-block;
+                  }
+          
+                  .date {
+                      background-color: #007bff;
+                      color: #fff;
+                      padding: 5px 10px;
+                      border-radius: 5px;
+                      font-weight: bold;
+                  }
+              </style>
+          </head>
+          <body>
+              <div class="container">
+                  <h2>Special Offer from ${salonName}</h2>
+                  <p>Don't miss our special offer!</p>
+                  <p>Get <span class="offer">${specialOffer.reductionValue}${reductionType}</span> off on selected services.</p>
+                  <p>Valid from <span class="date">${startDate}</span> to <span class="date">${endDate}</span>.</p>
+              </div>
+          </body>
+          </html>
+      `;
+
+      for(const client of clients){
         await sendMail
           .send(
             process.env._MAIL_USER,
-            pro.VTR_membre.email,
-            subject,
-            subject,
+            client.user.email,
+            "Special Offer",
+            "Special Offer",
             htmlContent,
             null,
             null
           )
-          .then((info) => {
-            console.log(info);
-          })
+          .catch((error) => {
+            throw new Error("Cannot send email notification");
+          });
+      }
+
+
+
+    },
+
+      async sendAppointmentReminder(appointment, delayInHour) {
+        let formattedDate = appointment.startDateTime.toLocaleString("en-US", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" });
+        let salonName = "Paradise Glam"
+        htmlContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Appointment Reminder</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    background-color: #f4f4f4;
+                    margin: 0;
+                    padding: 0;
+                }
+                .container {
+                    max-width: 600px;
+                    margin: 0 auto;
+                    padding: 20px;
+                    background-color: #ffffff;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                }
+                h1, p {
+                    color: #333333;
+                    margin: 0;
+                    padding: 0;
+                }
+                p {
+                    margin-bottom: 20px;
+                }
+                .signature {
+                    margin-top: 40px;
+                    font-size: 14px;
+                    color: #666666;
+                }
+            </style>
+        </head>
+        <body>
+
+        <div class="container">
+            <h1>Appointment Reminder</h1>
+            <p>Dear ${appointment.client.user.name},</p>
+            <p>This is a reminder that you have an appointment at ${salonName} on ${formattedDate} in ${delayInHour} hours.</p>
+            <p>If you need to cancel or reschedule your appointment, please contact us as soon as possible.</p>
+            <p>We look forward to seeing you soon!</p>
+            <p class="signature">Best regards,<br>The ${salonName} Team</p>
+        </div>
+
+        </body>
+        </html>
+        `;
+        //send email notification
+        await sendMail
+          .send(
+            process.env._MAIL_USER,
+            appointment.client.user.email,
+            "Appointment Reminder",
+            "Appointment Reminder",
+            htmlContent,
+            null,
+            null
+          )
           .catch((error) => {
             console.log(error);
-            throw new Error("Impossible d'envoyer l'email de notification");
+            throw new Error("Cannot send email notification");
           });
       },
       
@@ -57,7 +177,7 @@ module.exports = {
         await user.save();
         
         let salonName = "Paradise Glam"
-          newUrl = process.env._HOST_FRONT + "/confirmAccount?token=" + newUrl;
+          newUrl = process.env._HOST_FRONT + "/auth/register-verify/" + newUrl;
           subject = `Registration Confirmation - ${salonName}`;
           // TODO: Customize this message based on the user's language
           htmlContent = `
