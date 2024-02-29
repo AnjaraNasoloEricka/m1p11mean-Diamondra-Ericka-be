@@ -26,6 +26,9 @@ router.put('/:id', employeeController.updateEmployeeById);
 router.delete('/:id', employeeController.deleteEmployeeById);
 /* Delete employee by ID endpoint */
 
+/* Get free employees */
+router.post('/free/:date', employeeController.getFreeEmployees)
+/* Get free employees */
 
 
 

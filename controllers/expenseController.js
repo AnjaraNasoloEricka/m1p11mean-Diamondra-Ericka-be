@@ -27,6 +27,15 @@ const expenseController = {
         catch(err){
             return res.status(err.status).json(err);
         }
+    },
+    getExpensePerMonth: async (req, res) => {
+        try{
+           const response = await expenseService.getExpensePerMonth(req.params.year);
+              return res.status(response.status).json(response);
+        }
+        catch(err){
+            return res.status(err.status).json(err);
+        }
     }
 }
 

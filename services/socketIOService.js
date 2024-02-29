@@ -10,7 +10,9 @@ module.exports = (server) => {
                     cors: {
                         origin: process.env._HOST_FRONT,
                         credentials: true
-                    }
+                    },
+                    transports: ['websocket'],
+                    secure: true
                 });
 
                 return io.on('connection', (socket) => {

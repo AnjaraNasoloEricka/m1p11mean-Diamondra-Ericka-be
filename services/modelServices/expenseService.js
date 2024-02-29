@@ -42,6 +42,40 @@ const expenseService = {
             throw new responseHandler((error.status) ?  error.status : 400, error.message);
         }
     },
+
+    getExpensePerMonth : async function(year) {
+        try{
+            const totalAmounts = await Expense.aggregate([
+                {
+                    $match: {
+                        date: {
+                            $gte: new Date(year, 0, 1),
+                            $lt: new Date(year + 1, 0, 1)
+                        }
+                    }
+                },
+                {
+                    $group: {
+                        _id: { $month: "$date" },
+                        totalAmount: {
+                            $sum: "$amount"
+                        },
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        month: "$_id",
+                        totalAmount: 1
+                    }
+                }
+            ]);
+            return new responseHandler(200, 'Expenses found', totalAmounts);
+        }
+        catch(error){
+            throw new responseHandler((error.status) ?  error.status : 400, error.message);
+        }
+    }
 };
 
 module.exports = expenseService;
