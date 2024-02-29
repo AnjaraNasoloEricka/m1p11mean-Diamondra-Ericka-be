@@ -26,6 +26,10 @@ module.exports = (server) => {
     res.render('index', { title: 'Express' });
   });
 
+  // router for expenses
+  router.use('/expense', require('./expense'));
+  // router for expenses
+
   // router for users (auth)
   router.use('/users', usersRouter);
   // router for users (auth)

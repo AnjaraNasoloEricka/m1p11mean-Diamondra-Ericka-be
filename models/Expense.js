@@ -18,6 +18,11 @@ const expenseSchema = new mongoose.Schema({
         type: ExpenseType.schema,
         ref: 'ExpenseType',
         required: true,
+    },
+    status : {
+        type: Number,
+        default: 1,
+        enum : [0, 1]
     }
 },
 {
