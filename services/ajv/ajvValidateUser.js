@@ -10,7 +10,7 @@ module.exports = {
                 },
                 "password": {
                     "type": "string",
-                    "minLength": 6
+                    "minLength": 1
                 }
             }
         }

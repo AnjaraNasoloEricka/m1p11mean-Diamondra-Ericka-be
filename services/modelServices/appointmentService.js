@@ -7,6 +7,7 @@ const { Service } = require('../../models/Service');
 const { SpecialOffer } = require('../../models/SpecialOffer');
 const responseHandler = require('../handler/responseHandler');
 const appointmentScheduler = require('../scheduler/appointmentScheduler');
+const employeeService = require('./employeeService');
 
 
 const appointmentService = {
@@ -51,52 +52,63 @@ const appointmentService = {
             if (!employee) throw new responseHandler(404, "Employee not found");
             newAppointment.employee = employee;
 
-            const customer = await Customer.findOne({_id: appointmentData.customerId});
+            const customer = await Customer.findOne({"user._id": appointmentData.customerId});
             if (!customer) throw new responseHandler(404, "Customer not found");
             newAppointment.client = customer;
 
-            if (!appointmentData.serviceIds && !appointmentData.specialOfferId) {
-                throw new responseHandler(400, "You must provide at least one service or special offer");
+            if (!appointmentData.services || appointmentData.services.length === 0) {
+                throw new responseHandler(400, "You must provide at least one service");
             }
 
-            if (appointmentData.serviceIds) {
-                const services = await Service.find({_id: {$in: appointmentData.serviceIds}});
-                if (services.length !== appointmentData.serviceIds?.length) throw new responseHandler(404, "One or more services not found");
-                newAppointment.services = services;
+            const services = await Service.find({_id: {$in : appointmentData.services}});
+            if (services.length !== appointmentData.services.length) {
+                throw new responseHandler(404, "One or more services not found");
             }
 
-            if (appointmentData.specialOfferId) {
-                const specialOffer = await SpecialOffer.findOne({_id: appointmentData.specialOfferId});
-                if (!specialOffer) throw new responseHandler(404, "Special offer not found");
+            newAppointment.services = services;
+
+            //check if service is in special offer
+            const specialOffer = await SpecialOffer.findOne({services: newAppointment.services, startDate: {$lte: newAppointment.startDateTime}, endDate: {$gte: newAppointment.startDateTime}}).populate('services');
+            if (specialOffer) {
                 newAppointment.specialOffer = specialOffer;
             }
 
             //calculate endDateTime
             let seconds = 0;
-            if (newAppointment.services) {
-                newAppointment.services.forEach(service => {
-                    seconds += service.duration;
-                });
-            }
-            if (newAppointment.specialOffer) {
-                newAppointment.specialOffer.services.forEach(service => {
-                    seconds += service.duration;
-                });
-            }
+        
+            newAppointment.services.forEach(service => {
+                seconds += service.duration;
+            });
+            
             newAppointment.endDateTime = new Date(newAppointment.startDateTime.getTime() + seconds * 1000);
 
             //calculate totalPrice
             let price = 0;
-            if (newAppointment.services) {
+            
+            if (newAppointment.specialOffer) {
+                if (newAppointment.specialOffer.reductionType === 'percentage') {
+                    newAppointment.specialOffer.services.forEach(service => {
+                        price += service.price;
+                    });
+                    console.log(price);
+                    price = price - (price * newAppointment.specialOffer.reductionValue / 100);
+                    console.log(price);
+                }
+                else {
+                    newAppointment.specialOffer.services.forEach(service => {
+                        price += service.price;
+                    });
+                    price -= newAppointment.specialOffer.reductionValue;
+                }
+            }
+
+            else if (newAppointment.services) {
                 newAppointment.services.forEach(service => {
                     price += service.price;
                 });
             }
-            if (newAppointment.specialOffer) {
-                newAppointment.specialOffer.services.forEach(service => {
-                    price += service.price;
-                });
-            }
+            
+            console.log(price);
             newAppointment.totalPrice = price;
             newAppointment.leftToPay = price;
             await newAppointment.save();
