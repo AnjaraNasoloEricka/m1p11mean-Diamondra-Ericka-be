@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 
-var {app, server} = require('../app');
+var {server} = require('../app');
 var debug = require('debug')('m1p11mean-diamondra-ericka-be:server');
 
 /**
@@ -12,7 +12,6 @@ var debug = require('debug')('m1p11mean-diamondra-ericka-be:server');
  */
 
 var port = normalizePort(process.env.PORT || '3000');
-app.set('port', port);
 
 
 /**
