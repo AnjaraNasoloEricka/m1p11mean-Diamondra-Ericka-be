@@ -11,12 +11,16 @@ const taskService = {
             let commission = 0;
             appointments.forEach(appointment => {
                 if (appointment.status !== 'done') return;
-                for (let service of appointment.services) {
-                    commission += service.commissionValue;
-                }
                 if (appointment.specialOffer) {
                     commission += appointment.specialOffer.commissionValue;
                 }
+                else {
+                    for (let service of appointment.services) {
+                    commission += service.commissionValue;
+                    }
+                }
+
+
                 // commission += appointment.services.reduce((acc, service) => acc + service.commissionValue, 0);
                 // commission += appointment.specialOffer.reduce((acc, service) => acc + service.commissionValue, 0);
             });
