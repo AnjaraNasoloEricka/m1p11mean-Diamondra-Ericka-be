@@ -30,9 +30,9 @@ const appointmentService = {
             if (!userId || userId === 0) throw new responseHandler(400, "The user ID is invalid");
             const employeeId = await Employee.findOne({"user._id": userId}).select('_id');
 
-            if (!employeeId) throw new responseHandler(404, "This user is not an employee");
+            //if (!employeeId) throw new responseHandler(404, "This user is not an employee");
 
-            const appointments = await Appointment.find({'employee._id': employeeId, startDateTime: {$gte: date, $lt: new Date(date.getTime() + 24 * 60 * 60 * 1000)}});
+            const appointments = await Appointment.find({'employee.user._id': userId, startDateTime: {$gte: date, $lt: new Date(date.getTime() + 24 * 60 * 60 * 1000)}});
             return new responseHandler(200, "Employee appointment found", appointments);
         }
         catch(err) {

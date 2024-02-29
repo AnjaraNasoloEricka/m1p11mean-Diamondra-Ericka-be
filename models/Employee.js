@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const { User } = require('./User');
 const { EmployeeSchedule } = require('./EmployeeSchedule');
-const { Service } = require('./Service');
+const { ServiceType } = require('./ServiceType');
 
 const employeeSchema = new mongoose.Schema({
         _id : {
@@ -13,7 +13,7 @@ const employeeSchema = new mongoose.Schema({
             required: true
         },
         services : {
-            type: [Service.schema],
+            type: [ServiceType.schema],
             ref: 'Service',
             required: true
         },

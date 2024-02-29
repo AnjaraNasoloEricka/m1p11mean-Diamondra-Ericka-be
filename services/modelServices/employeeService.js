@@ -16,19 +16,15 @@ const employeeService = {
             ajvServices.validateSchema(schema, employeeData.user);
 
             let user = await Employee.findOne({ 'user.email' : employeeData.user.email });
-            if (user)
-                throw new responseHandler(401, 'This email is already registered as an employee');
+            if (user) throw new responseHandler(401, 'This email is already registered as an employee');
 
             user = await Customer.findOne({ 'user.email' : employeeData.user.email });
-            if (user)
-                throw new responseHandler(401, 'This email is already registered as a customer');
+            if (user) throw new responseHandler(401, 'This email is already registered as a customer');
 
             employeeData.user.status = 1;
 
             let role = await Role.findOne({ label : "Employee" });
-
-            if (!role)
-                throw new responseHandler(500, 'The role does not exist');
+            if (!role) throw new responseHandler(500, 'The role does not exist');
 
             employeeData.user.role = role;
 
@@ -37,6 +33,7 @@ const employeeService = {
             const salt = await bcrypt.genSalt(Number(process.env.SALT));
             newUser.password = await bcrypt.hash(newUser.password, salt);
             
+
             await newUser.save();
 
             let newEmployee = new Employee(employeeData);
