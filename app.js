@@ -25,7 +25,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(cors()); // Enable CORS for all routes
+app.use(cors({
+  origin: 'https://paradiseglam-fe.onrender.com/',
+  optionsSuccessStatus: 200
+}));
+ // Enable CORS for all routes
 
 /**
  * Create HTTP server.

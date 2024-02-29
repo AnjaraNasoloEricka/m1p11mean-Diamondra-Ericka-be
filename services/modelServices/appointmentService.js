@@ -17,7 +17,8 @@ const appointmentService = {
 
             if (!employeeId) throw new responseHandler(404, "This user is not an employee");
 
-            const appointments = await Appointment.find({employee: employeeId}).populate('client').populate('services').populate('specialOffer');
+            const appointments = await Appointment.find({employee: employeeId});
+            
             return new responseHandler(200, "Employee appointment found", appointments);
         }
         catch(err) {

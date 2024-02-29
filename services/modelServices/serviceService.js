@@ -1,7 +1,7 @@
 const ajvServices = require('../ajv/ajvServices');
 const ajvValidateService = require('../ajv/ajvValidateService');
 const { Service } = require('../../models/Service');
-const ServiceType = require('../../models/ServiceType');
+const {ServiceType} = require('../../models/ServiceType');
 const responseHandler = require('../handler/responseHandler');
 const app = require("../../config/firebaseConfig");
 const firebaseStorage = require("../firebaseStorage");
