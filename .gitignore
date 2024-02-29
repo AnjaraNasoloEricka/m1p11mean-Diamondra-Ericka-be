@@ -5,3 +5,4 @@ node_modules/
 # Ignored files 
 .env
 yarn.lock
+package-lock.json
