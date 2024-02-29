@@ -5,6 +5,7 @@ var serviceRouter = require('./service');
 var employeeRouter = require('./employee');
 var appointmentRouter = require('./appointment');
 var customerRouter = require('./customer');
+var statRouter = require('./stat');
 
 module.exports = (server) => {
   const { initIoSocket } = require('../services/socketIOService')(server);
@@ -58,7 +59,14 @@ module.exports = (server) => {
   router.use('/customers', customerRouter);
   // router for customers
 
+  // router for tasks
   router.use('/tasks', taskRouter);
+  // router for tasks
+
+  // router for stat
+  router.use('/stat', statRouter);
+  // router for stat
+
 
   return router;
 }
